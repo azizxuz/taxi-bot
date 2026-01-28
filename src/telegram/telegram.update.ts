@@ -49,19 +49,26 @@ export class TelegramUpdate {
   async onMessage(@Ctx() ctx: any): Promise<void> {
     const text = ctx.message?.text;
 
-    // ✅ /reklama'ni shu yerning o'zida ishlatamiz (100%)
+    // agar reply bo'lsa va reply qilingan xabar reklamaText bilan boshlansa:
+    if (
+      ctx.message?.reply_to_message?.text?.includes(
+        'BESHARIQ – FARG‘ONA TAXI BOTI',
+      )
+    ) {
+      await this.reklama(ctx); // qaytadan tugmalar bilan yuboradi
+      return;
+    }
+
+    // /reklama
     if (text?.match(/^\/reklama(@\w+)?$/)) {
       await this.reklama(ctx);
       return;
     }
 
-    // ✅ boshqa commandlar flowga kirmasin
     if (text?.startsWith('/')) return;
 
-    if (text) {
-      await this.orderFlow.onTime(ctx, text);
-    }
-
+    // flow
+    if (text) await this.orderFlow.onTime(ctx, text);
     await this.orderFlow.onPhone(ctx, ctx.message);
   }
 
@@ -70,11 +77,15 @@ export class TelegramUpdate {
     await this.cancelAction.handle(ctx);
   }
   @Hears(/^\/reklama(@\w+)?$/)
-  async reklama(@Ctx() ctx: Context): Promise<void> {
+  async reklama(@Ctx() ctx: any): Promise<void> {
     const botLink =
-      process.env.BOT_LINK || 'https://t.me/@beshariq_fargona_taxi_pixl_bot';
+      process.env.BOT_LINK || 'https://t.me/beshariq_fargona_taxi_pixl_bot';
     const kanalLink =
       process.env.CHANNEL_LINK || 'https://t.me/taxi_yangiliklari';
+
+    const shareUrl =
+      `https://t.me/share/url?url=${encodeURIComponent(botLink)}` +
+      `&text=${encodeURIComponent(reklamaText)}`;
 
     await ctx.reply(reklamaText, {
       reply_markup: {
@@ -82,6 +93,7 @@ export class TelegramUpdate {
           [{ text: '🚕 Buyurtma berish', callback_data: 'order' }],
           [{ text: '🤖 Botga kirish', url: botLink }],
           [{ text: '📢 Kanal', url: kanalLink }],
+          [{ text: '📤 Ulashish', url: shareUrl }],
         ],
       },
     });
