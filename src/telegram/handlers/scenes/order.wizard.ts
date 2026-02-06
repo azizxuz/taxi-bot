@@ -192,7 +192,6 @@ export class OrderWizard {
         const textToChannel =
           `🚕 Yangi buyurtma!\n\n` +
           `📍 Yo'nalish: ${o.route}\n` +
-          `⏰ Vaqt: ${o.time}\n` +
           `👤 Jins: ${o.gender}\n` +
           `📞 Telefon: ${o.phone}\n\n` +
           `🧾 Mijoz: ${o.fullName ?? '-'}\n` +

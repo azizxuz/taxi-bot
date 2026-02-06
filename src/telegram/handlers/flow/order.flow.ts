@@ -196,7 +196,6 @@ export class OrderFlow {
     const textToChannel =
       `🚕 Yangi buyurtma!\n\n` +
       `📍 Yo'nalish: ${order.route}\n` +
-      `⏰ Vaqt: ${order.time}\n` +
       `👤 Jins: ${order.gender}\n` +
       `📞 Telefon: ${order.phone}\n\n` +
       `🧾 Mijoz: ${fullName}\n` +
